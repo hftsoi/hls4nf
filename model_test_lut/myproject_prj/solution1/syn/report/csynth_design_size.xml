@@ -1,0 +1,69 @@
+<design_size title="Design Size Report">
+    <item name="Instructions per Function for each Compilation Phase">
+        <hiertable>
+            <header size="6" col0="Function" col1="Location" col2="Compile/Link" col3="Unroll/Inline" col4="Performance/Pipeline" col5="Optimizations"/>
+            <rows>
+                <row id="0" col0="myproject" col1="myproject.cpp:50" col2="31058" col3="159647" col3_note="*" col4="29216" col5="28932">
+                    <row id="33" col0="dense&lt;ap_fixed&lt;12, 4, AP_RND, AP_SAT, 0&gt;, ap_fixed&lt;35, 17, AP_TRN, AP_WRAP, 0&gt;, config2&gt;" col1="nnet_dense.h:41" col2="662" col3="" col4="" col5="">
+                        <row id="1" col0="dense" col1="nnet_dense.h:50" col2="660" col3="" col4="" col5="">
+                            <row id="7" col0="dense_latency&lt;ap_fixed&lt;12, 4, AP_RND, AP_SAT, 0&gt;, ap_fixed&lt;35, 17, AP_TRN, AP_WRAP, 0&gt;, config2&gt;" col1="nnet_dense_latency.h:13" col2="658" col3="" col4="" col5="">
+                                <row id="10" col0="product" col1="nnet_mult.h:70" col2="155" col3="" col4="" col5=""/>
+                                <row id="15" col0="cast&lt;ap_fixed&lt;12, 4, AP_RND, AP_SAT, 0&gt;, ap_fixed&lt;35, 17, AP_TRN, AP_WRAP, 0&gt;, config2&gt;" col1="nnet_mult.h:110" col2="60" col3="" col4="" col5=""/>
+                            </row>
+                        </row>
+                    </row>
+                    <row id="27" col0="leaky_relu&lt;ap_fixed&lt;35, 17, AP_TRN, AP_WRAP, 0&gt;, ap_fixed&lt;16, 6, AP_TRN, AP_WRAP, 0&gt;, ap_fixed&lt;16, 6, AP_TRN, AP_WRAP, 0&gt;, LeakyReLU_config4&gt;" col1="nnet_activation.h:503" col2="429" col3="1219" col4="385" col5="386"/>
+                    <row id="29" col0="dense&lt;ap_fixed&lt;16, 6, AP_TRN, AP_WRAP, 0&gt;, ap_fixed&lt;38, 18, AP_TRN, AP_WRAP, 0&gt;, config5&gt;" col1="nnet_dense.h:41" col2="657" col3="" col4="" col5="">
+                        <row id="1" col0="dense" col1="nnet_dense.h:50" col2="655" col3="" col4="" col5="">
+                            <row id="64" col0="dense_latency&lt;ap_fixed&lt;16, 6, AP_TRN, AP_WRAP, 0&gt;, ap_fixed&lt;38, 18, AP_TRN, AP_WRAP, 0&gt;, config5&gt;" col1="nnet_dense_latency.h:13" col2="653" col3="" col4="" col5="">
+                                <row id="10" col0="product" col1="nnet_mult.h:70" col2="151" col3="" col4="" col5=""/>
+                                <row id="48" col0="cast&lt;ap_fixed&lt;16, 6, AP_TRN, AP_WRAP, 0&gt;, ap_fixed&lt;38, 18, AP_TRN, AP_WRAP, 0&gt;, config5&gt;" col1="nnet_mult.h:110" col2="60" col3="" col4="" col5=""/>
+                            </row>
+                        </row>
+                    </row>
+                    <row id="59" col0="leaky_relu&lt;ap_fixed&lt;38, 18, AP_TRN, AP_WRAP, 0&gt;, ap_fixed&lt;16, 6, AP_TRN, AP_WRAP, 0&gt;, ap_fixed&lt;16, 6, AP_TRN, AP_WRAP, 0&gt;, LeakyReLU_config7&gt;" col1="nnet_activation.h:503" col2="429" col3="611" col4="193" col5="194"/>
+                    <row id="63" col0="dense&lt;ap_fixed&lt;16, 6, AP_TRN, AP_WRAP, 0&gt;, ap_fixed&lt;37, 17, AP_TRN, AP_WRAP, 0&gt;, config8&gt;" col1="nnet_dense.h:41" col2="657" col3="" col4="" col5="">
+                        <row id="1" col0="dense" col1="nnet_dense.h:50" col2="655" col3="" col4="" col5="">
+                            <row id="18" col0="dense_latency&lt;ap_fixed&lt;16, 6, AP_TRN, AP_WRAP, 0&gt;, ap_fixed&lt;37, 17, AP_TRN, AP_WRAP, 0&gt;, config8&gt;" col1="nnet_dense_latency.h:13" col2="653" col3="" col4="" col5="">
+                                <row id="10" col0="product" col1="nnet_mult.h:70" col2="151" col3="" col4="" col5=""/>
+                                <row id="22" col0="cast&lt;ap_fixed&lt;16, 6, AP_TRN, AP_WRAP, 0&gt;, ap_fixed&lt;37, 17, AP_TRN, AP_WRAP, 0&gt;, config8&gt;" col1="nnet_mult.h:110" col2="60" col3="" col4="" col5=""/>
+                            </row>
+                        </row>
+                    </row>
+                    <row id="62" col0="leaky_relu&lt;ap_fixed&lt;37, 17, AP_TRN, AP_WRAP, 0&gt;, ap_fixed&lt;16, 6, AP_TRN, AP_WRAP, 0&gt;, ap_fixed&lt;16, 6, AP_TRN, AP_WRAP, 0&gt;, LeakyReLU_config10&gt;" col1="nnet_activation.h:503" col2="429" col3="155" col4="49" col5="50"/>
+                    <row id="30" col0="planar_flow" col1="myproject.cpp:12" col2="15189" col2_disp="15,189 (3 calls)" col3="2850" col3_disp="  2,850 (3 calls)" col4="537" col4_disp="   537 (3 calls)" col5="537" col5_disp="   537 (3 calls)">
+                        <row id="25" col0="operator()" col1="nnet_types.h:47" col2="6288" col2_disp=" 6,288 (12 calls)" col3="657" col3_disp="    657 (12 calls)" col4="" col5=""/>
+                    </row>
+                    <row id="7" col0="dense_latency&lt;ap_fixed&lt;12, 4, AP_RND, AP_SAT, 0&gt;, ap_fixed&lt;35, 17, AP_TRN, AP_WRAP, 0&gt;, config2&gt;" col1="nnet_dense_latency.h:13" col2="" col3="117996" col4="21726" col5="21727">
+                        <row id="15" col0="cast&lt;ap_fixed&lt;12, 4, AP_RND, AP_SAT, 0&gt;, ap_fixed&lt;35, 17, AP_TRN, AP_WRAP, 0&gt;, config2&gt;" col1="nnet_mult.h:110" col2="" col3="608" col3_disp="    608 (32 calls)" col4="" col5=""/>
+                    </row>
+                    <row id="64" col0="dense_latency&lt;ap_fixed&lt;16, 6, AP_TRN, AP_WRAP, 0&gt;, ap_fixed&lt;38, 18, AP_TRN, AP_WRAP, 0&gt;, config5&gt;" col1="nnet_dense_latency.h:13" col2="" col3="32414" col4="5125" col5="5126">
+                        <row id="48" col0="cast&lt;ap_fixed&lt;16, 6, AP_TRN, AP_WRAP, 0&gt;, ap_fixed&lt;38, 18, AP_TRN, AP_WRAP, 0&gt;, config5&gt;" col1="nnet_mult.h:110" col2="" col3="304" col3_disp="    304 (16 calls)" col4="" col5=""/>
+                    </row>
+                    <row id="18" col0="dense_latency&lt;ap_fixed&lt;16, 6, AP_TRN, AP_WRAP, 0&gt;, ap_fixed&lt;37, 17, AP_TRN, AP_WRAP, 0&gt;, config8&gt;" col1="nnet_dense_latency.h:13" col2="" col3="4197" col4="661" col5="662">
+                        <row id="22" col0="cast&lt;ap_fixed&lt;16, 6, AP_TRN, AP_WRAP, 0&gt;, ap_fixed&lt;37, 17, AP_TRN, AP_WRAP, 0&gt;, config8&gt;" col1="nnet_mult.h:110" col2="" col3="76" col3_disp="     76 (4 calls)" col4="" col5=""/>
+                    </row>
+                </row>
+            </rows>
+            <notes>
+                <note name="*" desc="Exceeded design size warning message threshold"/>
+            </notes>
+        </hiertable>
+    </item>
+    <item name="Description of Compilation Phases">
+        <table>
+            <keys size="2">Compilation Phase, Description</keys>
+            <column name="Compile/Link">All functions are compiled and linked into a single design</column>
+            <column name="Unroll/Inline">After user unroll and inline pragmas are applied</column>
+            <column name="Performance/Pipeline">After performance and pipeline pragmas are applied</column>
+            <column name="Optimizations">After high level synthesis optimizations</column>
+        </table>
+    </item>
+    <item name="Design Size Message Settings">
+        <table>
+            <keys size="3">Message Setting, Value, Description</keys>
+            <column name="config_compile -design_size_maximum_warning">100000, Show a warning when total design instructions exceeds this value</column>
+        </table>
+    </item>
+</design_size>
+

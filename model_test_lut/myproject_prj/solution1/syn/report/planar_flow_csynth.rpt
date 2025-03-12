@@ -1,0 +1,204 @@
+
+
+================================================================
+== Vitis HLS Report for 'planar_flow'
+================================================================
+* Date:           Wed Mar 12 21:21:35 2025
+
+* Version:        2023.1 (Build 3854077 on May  4 2023)
+* Project:        myproject_prj
+* Solution:       solution1 (Vivado IP Flow Target)
+* Product family: virtexuplus
+* Target device:  xcvu13p-flga2577-2-e
+
+
+================================================================
+== Performance Estimates
+================================================================
++ Timing: 
+    * Summary: 
+    +--------+---------+----------+------------+
+    |  Clock |  Target | Estimated| Uncertainty|
+    +--------+---------+----------+------------+
+    |ap_clk  |  5.00 ns|  4.058 ns|     0.62 ns|
+    +--------+---------+----------+------------+
+
++ Latency: 
+    * Summary: 
+    +---------+---------+-----------+-----------+-----+-----+---------+
+    |  Latency (cycles) |   Latency (absolute)  |  Interval | Pipeline|
+    |   min   |   max   |    min    |    max    | min | max |   Type  |
+    +---------+---------+-----------+-----------+-----+-----+---------+
+    |        4|        4|  20.000 ns|  20.000 ns|    1|    1|      yes|
+    +---------+---------+-----------+-----------+-----+-----+---------+
+
+    + Detail: 
+        * Instance: 
+        N/A
+
+        * Loop: 
+        N/A
+
+
+
+================================================================
+== Utilization Estimates
+================================================================
+* Summary: 
++---------------------+---------+-------+---------+---------+------+
+|         Name        | BRAM_18K|  DSP  |    FF   |   LUT   | URAM |
++---------------------+---------+-------+---------+---------+------+
+|DSP                  |        -|      7|        -|        -|     -|
+|Expression           |        -|      -|        0|      165|     -|
+|FIFO                 |        -|      -|        -|        -|     -|
+|Instance             |        -|      1|        0|        5|     -|
+|Memory               |        1|      -|        0|        0|     -|
+|Multiplexer          |        -|      -|        -|        -|     -|
+|Register             |        -|      -|      820|      288|     -|
++---------------------+---------+-------+---------+---------+------+
+|Total                |        1|      8|      820|      458|     0|
++---------------------+---------+-------+---------+---------+------+
+|Available SLR        |     1344|   3072|   864000|   432000|   320|
++---------------------+---------+-------+---------+---------+------+
+|Utilization SLR (%)  |       ~0|     ~0|       ~0|       ~0|     0|
++---------------------+---------+-------+---------+---------+------+
+|Available            |     5376|  12288|  3456000|  1728000|  1280|
++---------------------+---------+-------+---------+---------+------+
+|Utilization (%)      |       ~0|     ~0|       ~0|       ~0|     0|
++---------------------+---------+-------+---------+---------+------+
+
++ Detail: 
+    * Instance: 
+    +--------------------------+--------------------+---------+----+---+----+-----+
+    |         Instance         |       Module       | BRAM_18K| DSP| FF| LUT| URAM|
+    +--------------------------+--------------------+---------+----+---+----+-----+
+    |mul_15s_16s_26_1_1_U2033  |mul_15s_16s_26_1_1  |        0|   1|  0|   5|    0|
+    +--------------------------+--------------------+---------+----+---+----+-----+
+    |Total                     |                    |        0|   1|  0|   5|    0|
+    +--------------------------+--------------------+---------+----+---+----+-----+
+
+    * DSP: 
+    +----------------------------------------+----------------------------------+--------------+
+    |                Instance                |              Module              |  Expression  |
+    +----------------------------------------+----------------------------------+--------------+
+    |mac_muladd_10ns_13ns_26ns_26_1_1_U2039  |mac_muladd_10ns_13ns_26ns_26_1_1  |  i0 + i1 * i2|
+    |mac_muladd_10ns_14s_26s_26_1_1_U2037    |mac_muladd_10ns_14s_26s_26_1_1    |  i0 + i1 * i2|
+    |mac_muladd_10ns_14s_26s_26_1_1_U2038    |mac_muladd_10ns_14s_26s_26_1_1    |  i0 + i1 * i2|
+    |mac_muladd_10ns_15s_26s_26_1_1_U2040    |mac_muladd_10ns_15s_26s_26_1_1    |  i0 + i1 * i2|
+    |mac_muladd_14ns_16s_26ns_26_1_1_U2035   |mac_muladd_14ns_16s_26ns_26_1_1   |  i0 + i1 * i2|
+    |mac_muladd_15s_16s_26ns_26_1_1_U2034    |mac_muladd_15s_16s_26ns_26_1_1    |  i0 + i1 * i2|
+    |mac_muladd_15s_16s_26ns_26_1_1_U2036    |mac_muladd_15s_16s_26ns_26_1_1    |  i0 + i1 * i2|
+    +----------------------------------------+----------------------------------+--------------+
+
+    * Memory: 
+    +--------------------+------------------------------------------+---------+---+----+-----+------+-----+------+-------------+
+    |       Memory       |                  Module                  | BRAM_18K| FF| LUT| URAM| Words| Bits| Banks| W*Bits*Banks|
+    +--------------------+------------------------------------------+---------+---+----+-----+------+-----+------+-------------+
+    |tanh_lut_samples_U  |planar_flow_tanh_lut_samples_ROM_AUTO_1R  |        1|  0|   0|    0|   256|    9|     1|         2304|
+    +--------------------+------------------------------------------+---------+---+----+-----+------+-----+------+-------------+
+    |Total               |                                          |        1|  0|   0|    0|   256|    9|     1|         2304|
+    +--------------------+------------------------------------------+---------+---+----+-----+------+-----+------+-------------+
+
+    * FIFO: 
+    N/A
+
+    * Expression: 
+    +-------------------------+----------+----+---+----+------------+------------+
+    |      Variable Name      | Operation| DSP| FF| LUT| Bitwidth P0| Bitwidth P1|
+    +-------------------------+----------+----+---+----+------------+------------+
+    |add_ln46_fu_517_p2       |         +|   0|  0|  23|          16|          13|
+    |add_ln48_1_fu_338_p2     |         +|   0|  0|  20|          13|           1|
+    |add_ln48_fu_292_p2       |         +|   0|  0|  24|          17|          13|
+    |linear_term_2_fu_283_p2  |         +|   0|  0|  23|          16|          16|
+    |icmp_ln48_fu_332_p2      |      icmp|   0|  0|  21|          14|           1|
+    |icmp_ln51_fu_382_p2      |      icmp|   0|  0|  12|           5|           1|
+    |or_ln49_fu_402_p2        |        or|   0|  0|   2|           1|           1|
+    |index_2_fu_408_p3        |    select|   0|  0|   8|           1|           8|
+    |index_fu_352_p3          |    select|   0|  0|  13|           1|          13|
+    |select_ln48_fu_344_p3    |    select|   0|  0|  13|           1|          13|
+    |select_ln49_fu_394_p3    |    select|   0|  0|   2|           1|           2|
+    |ap_enable_pp0            |       xor|   0|  0|   2|           1|           2|
+    |xor_ln49_fu_388_p2       |       xor|   0|  0|   2|           1|           2|
+    +-------------------------+----------+----+---+----+------------+------------+
+    |Total                    |          |   0|  0| 165|          88|          86|
+    +-------------------------+----------+----+---+----+------------+------------+
+
+    * Multiplexer: 
+    N/A
+
+    * Register: 
+    +-----------------------------------------+----+----+-----+-----------+
+    |                   Name                  | FF | LUT| Bits| Const Bits|
+    +-----------------------------------------+----+----+-----+-----------+
+    |ap_CS_fsm                                |   1|   0|    1|          0|
+    |ap_enable_reg_pp0_iter1                  |   1|   0|    1|          0|
+    |ap_enable_reg_pp0_iter2                  |   1|   0|    1|          0|
+    |ap_enable_reg_pp0_iter3                  |   1|   0|    1|          0|
+    |ap_enable_reg_pp0_iter4                  |   1|   0|    1|          0|
+    |flow_b_val_read_reg_615                  |   6|   0|    6|          0|
+    |flow_b_val_read_reg_615_pp0_iter1_reg    |   6|   0|    6|          0|
+    |flow_u_0_val_read_reg_635                |  14|   0|   14|          0|
+    |flow_u_1_val_read_reg_630                |  14|   0|   14|          0|
+    |flow_u_2_val_read_reg_625                |  12|   0|   12|          0|
+    |flow_u_3_val_read_reg_620                |  15|   0|   15|          0|
+    |flow_w_2_val_read_reg_645                |  14|   0|   14|          0|
+    |flow_w_3_val_read_reg_640                |  15|   0|   15|          0|
+    |flow_w_3_val_read_reg_640_pp0_iter1_reg  |  15|   0|   15|          0|
+    |linear_term_2_reg_687                    |  16|   0|   16|          0|
+    |log_det_total_0_read_1_reg_650           |  16|   0|   16|          0|
+    |tmp_2_reg_677                            |  16|   0|   16|          0|
+    |tmp_3_reg_682                            |  16|   0|   16|          0|
+    |x_0_val_read_reg_672                     |  16|   0|   16|          0|
+    |x_1_val_read_reg_667                     |  16|   0|   16|          0|
+    |x_2_val_read_reg_661                     |  16|   0|   16|          0|
+    |x_3_val_read_reg_655                     |  16|   0|   16|          0|
+    |flow_u_0_val_read_reg_635                |  64|  32|   14|          0|
+    |flow_u_1_val_read_reg_630                |  64|  32|   14|          0|
+    |flow_u_2_val_read_reg_625                |  64|  32|   12|          0|
+    |flow_u_3_val_read_reg_620                |  64|  32|   15|          0|
+    |log_det_total_0_read_1_reg_650           |  64|  32|   16|          0|
+    |x_0_val_read_reg_672                     |  64|  32|   16|          0|
+    |x_1_val_read_reg_667                     |  64|  32|   16|          0|
+    |x_2_val_read_reg_661                     |  64|  32|   16|          0|
+    |x_3_val_read_reg_655                     |  64|  32|   16|          0|
+    +-----------------------------------------+----+----+-----+-----------+
+    |Total                                    | 820| 288|  379|          0|
+    +-----------------------------------------+----+----+-----+-----------+
+
+
+
+================================================================
+== Interface
+================================================================
+* Summary: 
++----------------------+-----+-----+------------+----------------------+--------------+
+|       RTL Ports      | Dir | Bits|  Protocol  |     Source Object    |    C Type    |
++----------------------+-----+-----+------------+----------------------+--------------+
+|ap_clk                |   in|    1|  ap_ctrl_hs|           planar_flow|  return value|
+|ap_rst                |   in|    1|  ap_ctrl_hs|           planar_flow|  return value|
+|ap_start              |   in|    1|  ap_ctrl_hs|           planar_flow|  return value|
+|ap_done               |  out|    1|  ap_ctrl_hs|           planar_flow|  return value|
+|ap_idle               |  out|    1|  ap_ctrl_hs|           planar_flow|  return value|
+|ap_ready              |  out|    1|  ap_ctrl_hs|           planar_flow|  return value|
+|ap_ce                 |   in|    1|  ap_ctrl_hs|           planar_flow|  return value|
+|ap_return_0           |  out|   16|  ap_ctrl_hs|           planar_flow|  return value|
+|ap_return_1           |  out|   16|  ap_ctrl_hs|           planar_flow|  return value|
+|ap_return_2           |  out|   16|  ap_ctrl_hs|           planar_flow|  return value|
+|ap_return_3           |  out|   16|  ap_ctrl_hs|           planar_flow|  return value|
+|ap_return_4           |  out|   16|  ap_ctrl_hs|           planar_flow|  return value|
+|x_0_val               |   in|   16|     ap_none|               x_0_val|        scalar|
+|x_1_val               |   in|   16|     ap_none|               x_1_val|        scalar|
+|x_2_val               |   in|   16|     ap_none|               x_2_val|        scalar|
+|x_3_val               |   in|   16|     ap_none|               x_3_val|        scalar|
+|log_det_total_0_read  |   in|   16|     ap_none|  log_det_total_0_read|        scalar|
+|flow_w_0_val          |   in|   15|     ap_none|          flow_w_0_val|        scalar|
+|flow_w_1_val          |   in|   15|     ap_none|          flow_w_1_val|        scalar|
+|flow_w_2_val          |   in|   14|     ap_none|          flow_w_2_val|        scalar|
+|flow_w_3_val          |   in|   15|     ap_none|          flow_w_3_val|        scalar|
+|flow_u_0_val          |   in|   14|     ap_none|          flow_u_0_val|        scalar|
+|flow_u_1_val          |   in|   14|     ap_none|          flow_u_1_val|        scalar|
+|flow_u_2_val          |   in|   12|     ap_none|          flow_u_2_val|        scalar|
+|flow_u_3_val          |   in|   15|     ap_none|          flow_u_3_val|        scalar|
+|flow_b_val            |   in|    6|     ap_none|            flow_b_val|        scalar|
++----------------------+-----+-----+------------+----------------------+--------------+
+
