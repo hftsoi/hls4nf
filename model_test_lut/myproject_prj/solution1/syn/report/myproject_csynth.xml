@@ -40,7 +40,7 @@
 <Resources>
 <BRAM_18K>3</BRAM_18K>
 <DSP>1976</DSP>
-<FF>12792</FF>
+<FF>12768</FF>
 <LUT>72855</LUT>
 <URAM>0</URAM>
 </Resources>

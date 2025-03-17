@@ -8,7 +8,7 @@
 <unit>ns</unit>
 <ProductFamily>virtexuplus</ProductFamily>
 <Part>xcvu13p-flga2577-2-e</Part>
-<TopModelName>planar_flow</TopModelName>
+<TopModelName>flow_planar_ap_fixed_ap_fixed_ap_fixed_4_lookup_table_lookup_table_s</TopModelName>
 <TargetClockPeriod>5.00</TargetClockPeriod>
 <ClockUncertainty>0.62</ClockUncertainty>
 <TargetInitiationInterval>4294967295</TargetInitiationInterval>
@@ -40,7 +40,7 @@
 <Resources>
 <BRAM_18K>1</BRAM_18K>
 <DSP>8</DSP>
-<FF>820</FF>
+<FF>808</FF>
 <LUT>458</LUT>
 <URAM>0</URAM>
 </Resources>
@@ -56,7 +56,7 @@
 <InterfaceSummary>
 <RtlPorts>
 <name>ap_clk</name>
-<Object>planar_flow</Object>
+<Object>flow_planar&lt;ap_fixed,ap_fixed,ap_fixed,4,lookup_table,lookup_table &gt;</Object>
 <Type>return value</Type>
 <Scope></Scope>
 <IOProtocol>ap_ctrl_hs</IOProtocol>
@@ -67,7 +67,7 @@
 </RtlPorts>
 <RtlPorts>
 <name>ap_rst</name>
-<Object>planar_flow</Object>
+<Object>flow_planar&lt;ap_fixed,ap_fixed,ap_fixed,4,lookup_table,lookup_table &gt;</Object>
 <Type>return value</Type>
 <Scope></Scope>
 <IOProtocol>ap_ctrl_hs</IOProtocol>
@@ -78,7 +78,7 @@
 </RtlPorts>
 <RtlPorts>
 <name>ap_start</name>
-<Object>planar_flow</Object>
+<Object>flow_planar&lt;ap_fixed,ap_fixed,ap_fixed,4,lookup_table,lookup_table &gt;</Object>
 <Type>return value</Type>
 <Scope></Scope>
 <IOProtocol>ap_ctrl_hs</IOProtocol>
@@ -89,7 +89,7 @@
 </RtlPorts>
 <RtlPorts>
 <name>ap_done</name>
-<Object>planar_flow</Object>
+<Object>flow_planar&lt;ap_fixed,ap_fixed,ap_fixed,4,lookup_table,lookup_table &gt;</Object>
 <Type>return value</Type>
 <Scope></Scope>
 <IOProtocol>ap_ctrl_hs</IOProtocol>
@@ -100,7 +100,7 @@
 </RtlPorts>
 <RtlPorts>
 <name>ap_idle</name>
-<Object>planar_flow</Object>
+<Object>flow_planar&lt;ap_fixed,ap_fixed,ap_fixed,4,lookup_table,lookup_table &gt;</Object>
 <Type>return value</Type>
 <Scope></Scope>
 <IOProtocol>ap_ctrl_hs</IOProtocol>
@@ -111,7 +111,7 @@
 </RtlPorts>
 <RtlPorts>
 <name>ap_ready</name>
-<Object>planar_flow</Object>
+<Object>flow_planar&lt;ap_fixed,ap_fixed,ap_fixed,4,lookup_table,lookup_table &gt;</Object>
 <Type>return value</Type>
 <Scope></Scope>
 <IOProtocol>ap_ctrl_hs</IOProtocol>
@@ -122,7 +122,7 @@
 </RtlPorts>
 <RtlPorts>
 <name>ap_ce</name>
-<Object>planar_flow</Object>
+<Object>flow_planar&lt;ap_fixed,ap_fixed,ap_fixed,4,lookup_table,lookup_table &gt;</Object>
 <Type>return value</Type>
 <Scope></Scope>
 <IOProtocol>ap_ctrl_hs</IOProtocol>
@@ -133,7 +133,7 @@
 </RtlPorts>
 <RtlPorts>
 <name>ap_return_0</name>
-<Object>planar_flow</Object>
+<Object>flow_planar&lt;ap_fixed,ap_fixed,ap_fixed,4,lookup_table,lookup_table &gt;</Object>
 <Type>return value</Type>
 <Scope></Scope>
 <IOProtocol>ap_ctrl_hs</IOProtocol>
@@ -144,7 +144,7 @@
 </RtlPorts>
 <RtlPorts>
 <name>ap_return_1</name>
-<Object>planar_flow</Object>
+<Object>flow_planar&lt;ap_fixed,ap_fixed,ap_fixed,4,lookup_table,lookup_table &gt;</Object>
 <Type>return value</Type>
 <Scope></Scope>
 <IOProtocol>ap_ctrl_hs</IOProtocol>
@@ -155,7 +155,7 @@
 </RtlPorts>
 <RtlPorts>
 <name>ap_return_2</name>
-<Object>planar_flow</Object>
+<Object>flow_planar&lt;ap_fixed,ap_fixed,ap_fixed,4,lookup_table,lookup_table &gt;</Object>
 <Type>return value</Type>
 <Scope></Scope>
 <IOProtocol>ap_ctrl_hs</IOProtocol>
@@ -166,7 +166,7 @@
 </RtlPorts>
 <RtlPorts>
 <name>ap_return_3</name>
-<Object>planar_flow</Object>
+<Object>flow_planar&lt;ap_fixed,ap_fixed,ap_fixed,4,lookup_table,lookup_table &gt;</Object>
 <Type>return value</Type>
 <Scope></Scope>
 <IOProtocol>ap_ctrl_hs</IOProtocol>
@@ -177,7 +177,7 @@
 </RtlPorts>
 <RtlPorts>
 <name>ap_return_4</name>
-<Object>planar_flow</Object>
+<Object>flow_planar&lt;ap_fixed,ap_fixed,ap_fixed,4,lookup_table,lookup_table &gt;</Object>
 <Type>return value</Type>
 <Scope></Scope>
 <IOProtocol>ap_ctrl_hs</IOProtocol>
@@ -222,17 +222,6 @@
 <RtlPorts>
 <name>x_3_val</name>
 <Object>x_3_val</Object>
-<Type>scalar</Type>
-<Scope></Scope>
-<IOProtocol>ap_none</IOProtocol>
-<IOConfig></IOConfig>
-<Dir>in</Dir>
-<Bits>16</Bits>
-<Attribute>data</Attribute>
-</RtlPorts>
-<RtlPorts>
-<name>log_det_total_0_read</name>
-<Object>log_det_total_0_read</Object>
 <Type>scalar</Type>
 <Scope></Scope>
 <IOProtocol>ap_none</IOProtocol>
@@ -330,14 +319,14 @@
 <Attribute>data</Attribute>
 </RtlPorts>
 <RtlPorts>
-<name>flow_b_val</name>
-<Object>flow_b_val</Object>
+<name>log_det_total_read</name>
+<Object>log_det_total_read</Object>
 <Type>scalar</Type>
 <Scope></Scope>
 <IOProtocol>ap_none</IOProtocol>
 <IOConfig></IOConfig>
 <Dir>in</Dir>
-<Bits>6</Bits>
+<Bits>16</Bits>
 <Attribute>data</Attribute>
 </RtlPorts>
 </InterfaceSummary>

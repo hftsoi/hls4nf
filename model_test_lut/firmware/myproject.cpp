@@ -8,42 +8,44 @@
 nnet::lookup_table<result_t, 256, hls::tanh<16,6>> tanh_lut(-4, 4);
 nnet::lookup_table<result_t, 512, hls::log<16,6>> log_lut(0.125, 64);
 
-
-void planar_flow(result_t x[4],
-                 result_t z[4],
-                 result_t log_det_total[1],
-                 ap_fixed<16,6> flow_w[4],
-                 ap_fixed<16,6> flow_u[4],
-                 ap_fixed<16,6> flow_b[1]) {
+template <class data_T, class res_T, class weight_T, int N, class Op_tanh, class Op_log>
+void flow_planar(const data_T x[N],
+                 const weight_T flow_w[N],
+                 const weight_T flow_u[N],
+                 const weight_T &flow_b,
+                 const Op_tanh &op_tanh,
+                 const Op_log &op_log,
+                 res_T z[N],
+                 res_T &log_det_total) {
+FlowTransform:
     // z = x + u * h(w^T x + b)
-    result_t linear_term = 0;
-Flow1:
-    for(int i = 0; i < 4; i++) {
+    res_T linear_term = 0;
+    for (int i = 0; i < N; i++) {
         #pragma HLS UNROLL
-        linear_term += x[i] * flow_w[i];
+        linear_term += flow_w[i] * x[i];
     }
-    linear_term += flow_b[0];
-    result_t h = tanh_lut(linear_term);
-Flow2:
-    for(int i = 0; i < 4; i++) {
+    res_T h = op_tanh(linear_term + flow_b);
+    
+    for (int i = 0; i < N; i++) {
         #pragma HLS UNROLL
         z[i] = x[i] + flow_u[i] * h;
     }
 
+LogDeterminant:
     // log|det| = log|1 + u^T h'(w^T x + b) * w|
-    result_t h_prime = 1 - tanh_lut(linear_term) * tanh_lut(linear_term);
-    result_t u_dot_psi = 0;
-Flow3:
-    for(int i = 0; i < 4; i++) {
+    res_T det = 0;
+    for (int i = 0; i < N; i++) {
         #pragma HLS UNROLL
-        u_dot_psi += flow_w[i] * flow_u[i];
+        det += flow_u[i] * flow_w[i];
     }
-    u_dot_psi *= h_prime;
-
-    result_t det = 1 + u_dot_psi;
-    if (det < 0) { det = -det; }
-
-    log_det_total[0] += log_lut(det);
+    // h' = 1 - h^2 for h = tanh
+    det = 1 + det * (1 - h * h);
+    
+    if (det > 0) {
+        log_det_total += op_log(det);
+    } else {
+        log_det_total += op_log(-det);
+    }
 }
 
 
@@ -57,6 +59,7 @@ void myproject(
     #pragma HLS ARRAY_PARTITION variable=y complete dim=0
     #pragma HLS INTERFACE ap_vld port=x,y 
     #pragma HLS PIPELINE
+    //#pragma HLS DATAFLOW
 
     // hls-fpga-machine-learning insert load weights
 #ifndef __SYNTHESIS__
@@ -122,17 +125,17 @@ void myproject(
     #pragma HLS ARRAY_PARTITION variable=flow2_b complete dim=0
 
 
-    result_t log_det_total[1] = {0};
+    result_t log_det_total = 0;
 
     result_t flow0_out[4];
     #pragma HLS ARRAY_PARTITION variable=flow0_out complete dim=0
-    planar_flow(layer10_out, flow0_out, log_det_total, flow0_w, flow0_u, flow0_b);
+    flow_planar<result_t, result_t, ap_fixed<16,6>, 4>(layer10_out, flow0_w, flow0_u, flow0_b, tanh_lut, log_lut, flow0_out, log_det_total);
 
     result_t flow1_out[4];
     #pragma HLS ARRAY_PARTITION variable=flow1_out complete dim=0
-    planar_flow(flow0_out, flow1_out, log_det_total, flow1_w, flow1_u, flow1_b);
+    flow_planar<result_t, result_t, ap_fixed<16,6>, 4>(flow0_out, flow1_w, flow1_u, flow1_b, tanh_lut, log_lut, flow1_out, log_det_total);
 
-    planar_flow(flow1_out, y, log_det_total, flow2_w, flow2_u, flow2_b);
+    flow_planar<result_t, result_t, ap_fixed<16,6>, 4>(flow1_out, flow2_w, flow2_u, flow2_b, tanh_lut, log_lut, y, log_det_total);
     
     //planar_flow(layer10_out, y, log_det_total, flow0_w, flow0_u, flow0_b);
 
