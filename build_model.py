@@ -7,17 +7,24 @@ import qkeras
 from qkeras import *
 
 
+########### plain ae model
+
 def build_autoencoder(input_dim=57):
-    input_layer = layers.Input(shape=(input_dim,))
-    encoded = layers.Dense(32, activation='relu')(input_layer)
-    encoded = layers.Dense(16, activation='relu')(encoded)
-    latent = layers.Dense(3, activation='relu')(encoded)
+    x_in = layers.Input(shape=(input_dim,), name='in')
+    x = layers.Dense(32, name='dense1')(x_in)
+    x = layers.LeakyReLU(alpha=0.1, name='act1')(x)
+    x = layers.Dense(16, name='dense2')(x)
+    x = layers.LeakyReLU(alpha=0.1, name='act2')(x)
+    x = layers.Dense(3, name='dense3')(x)
+    x = layers.LeakyReLU(alpha=0.1, name='act3')(x)
     
-    decoded = layers.Dense(16, activation='relu')(latent)
-    decoded = layers.Dense(32, activation='relu')(decoded)
-    output_layer = layers.Dense(input_dim, activation='relu')(decoded)
+    x = layers.Dense(16, name='dense4')(x)
+    x = layers.LeakyReLU(alpha=0.1, name='act4')(x)
+    x = layers.Dense(32, name='dense5')(x)
+    x = layers.LeakyReLU(alpha=0.1, name='act5')(x)
+    x = layers.Dense(input_dim, name='dense6')(x)
     
-    model = Model(inputs=input_layer, outputs=output_layer)
+    model = Model(x_in, x, name='ae')
     model.compile(optimizer=tf.keras.optimizers.legacy.Adam(learning_rate=0.005), loss='mse')
     return model
 
@@ -27,6 +34,71 @@ def compute_mse_for_ae(model, x):
     mse = np.mean(np.square(x - reco), axis=1)
     return mse
 
+########### vae model
+
+def vae_sampling(z_par):
+    z_mean, z_log_var = z_par
+    batch = tf.shape(z_mean)[0]
+    dim = tf.shape(z_mean)[1]
+    epsilon = tf.random.normal(shape=(batch, dim))
+    z_sampled = z_mean + tf.exp(0.5 * z_log_var) * epsilon
+    return z_sampled
+
+
+def build_vae(input_dim=57, beta=0.5):
+    encoder_in = layers.Input(shape=(input_dim,), name='encoder_in')
+    x = layers.Dense(32, name='dense1')(encoder_in)
+    x = layers.LeakyReLU(alpha=0.1, name='act1')(x)
+    x = layers.Dense(16, name='dense2')(x)
+    x = layers.LeakyReLU(alpha=0.1, name='act2')(x)
+    
+    z_mean = layers.Dense(3, name='z_mean')(x)
+    z_log_var = layers.Dense(3, name='z_log_var')(x)
+
+    z = layers.Lambda(vae_sampling, output_shape=(3,), name='z_sampling')([z_mean, z_log_var])
+    
+    decoder_in = layers.Input(shape=(3,), name='decoder_in')
+    xx = layers.Dense(16, name='dense4')(decoder_in)
+    xx = layers.LeakyReLU(alpha=0.1, name='act4')(xx)
+    xx = layers.Dense(32, name='dense5')(xx)
+    xx = layers.LeakyReLU(alpha=0.1, name='act5')(xx)
+    decoder_out = layers.Dense(input_dim, name='dense6')(xx)
+
+    encoder = Model(encoder_in, [z_mean, z_log_var], name='vae_encoder')
+    decoder = Model(decoder_in, decoder_out, name='vae_decoder')
+    
+    reco = decoder(z)
+    vae = Model(encoder_in, reco, name='vae')
+
+    kl_loss = -0.5 * tf.reduce_sum(1 + z_log_var - tf.square(z_mean) - tf.exp(z_log_var), axis=-1)
+    kl_loss = tf.reduce_mean(kl_loss)
+    
+    vae.add_loss(beta * kl_loss)
+    
+    def reco_loss(y_true, y_pred):
+        mse = tf.reduce_mean(tf.square(y_true - y_pred))
+        return (1 - beta) * mse
+    
+    vae.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=0.005), loss=reco_loss)
+
+    return vae, encoder, decoder
+
+
+def compute_kl_for_vae(encoder, x):
+    z_mean, z_log_var = encoder.predict(x)
+    kl = -0.5 * np.sum(1 + z_log_var - np.square(z_mean) - np.exp(z_log_var), axis=1)
+    return kl
+
+
+def compute_r_for_vae(encoder, x):
+    z_mean, z_log_var = encoder.predict(x)
+    sigma = np.exp(0.5 * z_log_var)
+    r_i = z_mean / (sigma + 1e-6)
+    r = np.sum(np.square(r_i), axis=1)
+    return r
+
+
+########### nf model
 
 class PlanarFlow(layers.Layer):
     def __init__(self, **kwargs):
