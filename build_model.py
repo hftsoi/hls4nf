@@ -7,22 +7,41 @@ import qkeras
 from qkeras import *
 
 
+quantizer = quantized_bits(10, 2, alpha=1)
+quantized_relu = 'quantized_relu(10, 2, negative_slope=0.1)'
+
 ########### plain ae model
 
-def build_autoencoder(input_dim=57):
-    x_in = layers.Input(shape=(input_dim,), name='in')
-    x = layers.Dense(32, name='dense1')(x_in)
-    x = layers.LeakyReLU(alpha=0.1, name='act1')(x)
-    x = layers.Dense(16, name='dense2')(x)
-    x = layers.LeakyReLU(alpha=0.1, name='act2')(x)
-    x = layers.Dense(3, name='dense3')(x)
-    x = layers.LeakyReLU(alpha=0.1, name='act3')(x)
+def build_autoencoder(input_dim=57, q=True):
+    if q is False:
+        x_in = layers.Input(shape=(input_dim,), name='in')
+        x = layers.Dense(32, name='dense1')(x_in)
+        x = layers.LeakyReLU(alpha=0.1, name='act1')(x)
+        x = layers.Dense(16, name='dense2')(x)
+        x = layers.LeakyReLU(alpha=0.1, name='act2')(x)
+        x = layers.Dense(3, name='dense3')(x)
+        x = layers.LeakyReLU(alpha=0.1, name='act3')(x)
+        
+        x = layers.Dense(16, name='dense4')(x)
+        x = layers.LeakyReLU(alpha=0.1, name='act4')(x)
+        x = layers.Dense(32, name='dense5')(x)
+        x = layers.LeakyReLU(alpha=0.1, name='act5')(x)
+        x = layers.Dense(input_dim, name='dense6')(x)
     
-    x = layers.Dense(16, name='dense4')(x)
-    x = layers.LeakyReLU(alpha=0.1, name='act4')(x)
-    x = layers.Dense(32, name='dense5')(x)
-    x = layers.LeakyReLU(alpha=0.1, name='act5')(x)
-    x = layers.Dense(input_dim, name='dense6')(x)
+    else:
+        x_in = layers.Input(shape=(input_dim,), name='in')
+        x = QDense(32, kernel_quantizer=quantizer, bias_quantizer=quantizer, name='qdense1')(x_in)
+        x = QActivation(quantized_relu, name='qact1')(x)
+        x = QDense(16, kernel_quantizer=quantizer, bias_quantizer=quantizer, name='qdense2')(x)
+        x = QActivation(quantized_relu, name='qact2')(x)
+        x = QDense(3, kernel_quantizer=quantizer, bias_quantizer=quantizer, name='qdense3')(x)
+        x = QActivation(quantized_relu, name='qact3')(x)
+        
+        x = QDense(16, kernel_quantizer=quantizer, bias_quantizer=quantizer, name='qdense4')(x)
+        x = QActivation(quantized_relu, name='qact4')(x)
+        x = QDense(32, kernel_quantizer=quantizer, bias_quantizer=quantizer, name='qdense5')(x)
+        x = QActivation(quantized_relu, name='qact5')(x)
+        x = QDense(input_dim, kernel_quantizer=quantizer, bias_quantizer=quantizer, name='qdense6')(x)
     
     model = Model(x_in, x, name='ae')
     model.compile(optimizer=tf.keras.optimizers.legacy.Adam(learning_rate=0.005), loss='mse')
@@ -45,24 +64,42 @@ def vae_sampling(z_par):
     return z_sampled
 
 
-def build_vae(input_dim=57, beta=0.5):
-    encoder_in = layers.Input(shape=(input_dim,), name='encoder_in')
-    x = layers.Dense(32, name='dense1')(encoder_in)
-    x = layers.LeakyReLU(alpha=0.1, name='act1')(x)
-    x = layers.Dense(16, name='dense2')(x)
-    x = layers.LeakyReLU(alpha=0.1, name='act2')(x)
+def build_vae(input_dim=57, beta=0.5, q=True):
+    if q is False:
+        encoder_in = layers.Input(shape=(input_dim,), name='encoder_in')
+        x = layers.Dense(32, name='dense1')(encoder_in)
+        x = layers.LeakyReLU(alpha=0.1, name='act1')(x)
+        x = layers.Dense(16, name='dense2')(x)
+        x = layers.LeakyReLU(alpha=0.1, name='act2')(x)
     
-    z_mean = layers.Dense(3, name='z_mean')(x)
-    z_log_var = layers.Dense(3, name='z_log_var')(x)
+        z_mean = layers.Dense(3, name='z_mean')(x)
+        z_log_var = layers.Dense(3, name='z_log_var')(x)
+    else:
+        encoder_in = layers.Input(shape=(input_dim,), name='encoder_in')
+        x = QDense(32, kernel_quantizer=quantizer, bias_quantizer=quantizer, name='qdense1')(encoder_in)
+        x = QActivation(quantized_relu, name='qact1')(x)
+        x = QDense(16, kernel_quantizer=quantizer, bias_quantizer=quantizer, name='qdense2')(x)
+        x = QActivation(quantized_relu, name='qact2')(x)
+
+        z_mean = QDense(3, kernel_quantizer=quantizer, bias_quantizer=quantizer, name='qz_mean')(x)
+        z_log_var = QDense(3, kernel_quantizer=quantizer, bias_quantizer=quantizer, name='qz_log_var')(x)
 
     z = layers.Lambda(vae_sampling, output_shape=(3,), name='z_sampling')([z_mean, z_log_var])
     
-    decoder_in = layers.Input(shape=(3,), name='decoder_in')
-    xx = layers.Dense(16, name='dense4')(decoder_in)
-    xx = layers.LeakyReLU(alpha=0.1, name='act4')(xx)
-    xx = layers.Dense(32, name='dense5')(xx)
-    xx = layers.LeakyReLU(alpha=0.1, name='act5')(xx)
-    decoder_out = layers.Dense(input_dim, name='dense6')(xx)
+    if q is False:
+        decoder_in = layers.Input(shape=(3,), name='decoder_in')
+        xx = layers.Dense(16, name='dense4')(decoder_in)
+        xx = layers.LeakyReLU(alpha=0.1, name='act4')(xx)
+        xx = layers.Dense(32, name='dense5')(xx)
+        xx = layers.LeakyReLU(alpha=0.1, name='act5')(xx)
+        decoder_out = layers.Dense(input_dim, name='dense6')(xx)
+    else:
+        decoder_in = layers.Input(shape=(3,), name='decoder_in')
+        xx = QDense(16, kernel_quantizer=quantizer, bias_quantizer=quantizer, name='qdense4')(decoder_in)
+        xx = QActivation(quantized_relu, name='qact4')(xx)
+        xx = QDense(32, kernel_quantizer=quantizer, bias_quantizer=quantizer, name='qdense5')(xx)
+        xx = QActivation(quantized_relu, name='qact5')(xx)
+        decoder_out = QDense(input_dim, kernel_quantizer=quantizer, bias_quantizer=quantizer, name='qdense6')(xx)
 
     encoder = Model(encoder_in, [z_mean, z_log_var], name='vae_encoder')
     decoder = Model(decoder_in, decoder_out, name='vae_decoder')
@@ -79,7 +116,7 @@ def build_vae(input_dim=57, beta=0.5):
         mse = tf.reduce_mean(tf.square(y_true - y_pred))
         return (1 - beta) * mse
     
-    vae.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=0.005), loss=reco_loss)
+    vae.compile(optimizer=tf.keras.optimizers.legacy.Adam(learning_rate=0.005), loss=reco_loss)
 
     return vae, encoder, decoder
 
@@ -130,14 +167,22 @@ class PlanarFlow(layers.Layer):
     
 
 class NormalizingFlowModel(Model):
-    def __init__(self, num_flows, **kwargs):
+    def __init__(self, num_flows, q, **kwargs):
         super(NormalizingFlowModel, self).__init__(**kwargs)
-        self.dense1 = layers.Dense(32, name='dense1')
-        self.act1 = layers.LeakyReLU(alpha=0.1, name='act1')
-        self.dense2 = layers.Dense(16, name='dense2')
-        self.act2 = layers.LeakyReLU(alpha=0.1, name='act2')
-        self.dense3 = layers.Dense(4, name='dense3')
-        self.act3 = layers.LeakyReLU(alpha=0.1, name='act3')
+        if q is False:
+            self.dense1 = layers.Dense(32, name='dense1')
+            self.act1 = layers.LeakyReLU(alpha=0.1, name='act1')
+            self.dense2 = layers.Dense(16, name='dense2')
+            self.act2 = layers.LeakyReLU(alpha=0.1, name='act2')
+            self.dense3 = layers.Dense(4, name='dense3')
+            self.act3 = layers.LeakyReLU(alpha=0.1, name='act3')
+        else:
+            self.dense1 = QDense(32, kernel_quantizer=quantizer, bias_quantizer=quantizer, name='qdense1')
+            self.act1 = QActivation(quantized_relu, name='qact1')
+            self.dense2 = QDense(16, kernel_quantizer=quantizer, bias_quantizer=quantizer, name='qdense2')
+            self.act2 = QActivation(quantized_relu, name='qact2')
+            self.dense3 = QDense(4, kernel_quantizer=quantizer, bias_quantizer=quantizer, name='qdense3')
+            self.act3 = QActivation(quantized_relu, name='qact3')
 
         self.flows = [PlanarFlow() for _ in range(num_flows)]
     
