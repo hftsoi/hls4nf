@@ -7,14 +7,16 @@ import qkeras
 from qkeras import *
 
 
-quantizer = quantized_bits(10, 2, alpha=1)
-quantized_relu = 'quantized_relu(10, 2, negative_slope=0.1)'
+quantizer = quantized_bits(12, 4, alpha=1)
+quantized_relu = 'quantized_relu(12, 4, negative_slope=0.125)'
+# if negative_slope: assert np.mod(np.log2(negative_slope), 1) == 0
 
 ########### plain ae model
 
 def build_autoencoder(input_dim=57, q=True):
     if q is False:
         x_in = layers.Input(shape=(input_dim,), name='in')
+        #x = layers.BatchNormalization(name='bn1')(x_in)
         x = layers.Dense(32, name='dense1')(x_in)
         x = layers.LeakyReLU(alpha=0.1, name='act1')(x)
         x = layers.Dense(16, name='dense2')(x)
@@ -30,6 +32,7 @@ def build_autoencoder(input_dim=57, q=True):
     
     else:
         x_in = layers.Input(shape=(input_dim,), name='in')
+        #x = QBatchNormalization(beta_quantizer=quantizer, gamma_quantizer=quantizer, mean_quantizer=quantizer, variance_quantizer=quantizer, name='qbn1')(x_in)
         x = QDense(32, kernel_quantizer=quantizer, bias_quantizer=quantizer, name='qdense1')(x_in)
         x = QActivation(quantized_relu, name='qact1')(x)
         x = QDense(16, kernel_quantizer=quantizer, bias_quantizer=quantizer, name='qdense2')(x)
@@ -44,13 +47,13 @@ def build_autoencoder(input_dim=57, q=True):
         x = QDense(input_dim, kernel_quantizer=quantizer, bias_quantizer=quantizer, name='qdense6')(x)
     
     model = Model(x_in, x, name='ae')
-    model.compile(optimizer=tf.keras.optimizers.legacy.Adam(learning_rate=0.005), loss='mse')
+    model.compile(optimizer=tf.keras.optimizers.legacy.Adam(learning_rate=0.001), loss='mse')
     return model
 
 
 def compute_mse_for_ae(model, x):
-    reco = model.predict(x)
-    mse = np.mean(np.square(x - reco), axis=1)
+    x_reco = model.predict(x)
+    mse = np.mean(np.square(x - x_reco), axis=1)
     return mse
 
 ########### vae model
@@ -67,6 +70,7 @@ def vae_sampling(z_par):
 def build_vae(input_dim=57, beta=0.5, q=True):
     if q is False:
         encoder_in = layers.Input(shape=(input_dim,), name='encoder_in')
+        #x = layers.BatchNormalization(name='bn1')(encoder_in)
         x = layers.Dense(32, name='dense1')(encoder_in)
         x = layers.LeakyReLU(alpha=0.1, name='act1')(x)
         x = layers.Dense(16, name='dense2')(x)
@@ -76,6 +80,7 @@ def build_vae(input_dim=57, beta=0.5, q=True):
         z_log_var = layers.Dense(3, name='z_log_var')(x)
     else:
         encoder_in = layers.Input(shape=(input_dim,), name='encoder_in')
+        #x = QBatchNormalization(beta_quantizer=quantizer, gamma_quantizer=quantizer, mean_quantizer=quantizer, variance_quantizer=quantizer, name='qbn1')(encoder_in)
         x = QDense(32, kernel_quantizer=quantizer, bias_quantizer=quantizer, name='qdense1')(encoder_in)
         x = QActivation(quantized_relu, name='qact1')(x)
         x = QDense(16, kernel_quantizer=quantizer, bias_quantizer=quantizer, name='qdense2')(x)
@@ -116,7 +121,7 @@ def build_vae(input_dim=57, beta=0.5, q=True):
         mse = tf.reduce_mean(tf.square(y_true - y_pred))
         return (1 - beta) * mse
     
-    vae.compile(optimizer=tf.keras.optimizers.legacy.Adam(learning_rate=0.005), loss=reco_loss)
+    vae.compile(optimizer=tf.keras.optimizers.legacy.Adam(learning_rate=0.001), loss=reco_loss)
 
     return vae, encoder, decoder
 
@@ -170,6 +175,7 @@ class NormalizingFlowModel(Model):
     def __init__(self, num_flows, q, **kwargs):
         super(NormalizingFlowModel, self).__init__(**kwargs)
         if q is False:
+            #self.bn1 = layers.BatchNormalization(name='bn1')
             self.dense1 = layers.Dense(32, name='dense1')
             self.act1 = layers.LeakyReLU(alpha=0.1, name='act1')
             self.dense2 = layers.Dense(16, name='dense2')
@@ -177,6 +183,7 @@ class NormalizingFlowModel(Model):
             self.dense3 = layers.Dense(4, name='dense3')
             self.act3 = layers.LeakyReLU(alpha=0.1, name='act3')
         else:
+            #self.bn1 = QBatchNormalization(beta_quantizer=quantizer, gamma_quantizer=quantizer, mean_quantizer=quantizer, variance_quantizer=quantizer, name='qbn1')
             self.dense1 = QDense(32, kernel_quantizer=quantizer, bias_quantizer=quantizer, name='qdense1')
             self.act1 = QActivation(quantized_relu, name='qact1')
             self.dense2 = QDense(16, kernel_quantizer=quantizer, bias_quantizer=quantizer, name='qdense2')
@@ -187,6 +194,7 @@ class NormalizingFlowModel(Model):
         self.flows = [PlanarFlow() for _ in range(num_flows)]
     
     def call(self, inputs):
+        #x = self.bn1(inputs)
         x = self.dense1(inputs)
         x = self.act1(x)
         x = self.dense2(x)
