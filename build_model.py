@@ -7,8 +7,8 @@ import qkeras
 from qkeras import *
 
 
-quantizer = quantized_bits(12, 4, alpha=1)
-quantized_relu = 'quantized_relu(12, 4, negative_slope=0.125)'
+quantizer = quantized_bits(16, 6, alpha=1)
+quantized_relu = 'quantized_relu(16, 6, negative_slope=0.125)'
 # if negative_slope: assert np.mod(np.log2(negative_slope), 1) == 0
 
 ########### plain ae model
@@ -181,7 +181,7 @@ class NormalizingFlowModel(Model):
             self.dense2 = layers.Dense(16, name='dense2')
             self.act2 = layers.LeakyReLU(alpha=0.1, name='act2')
             self.dense3 = layers.Dense(4, name='dense3')
-            self.act3 = layers.LeakyReLU(alpha=0.1, name='act3')
+            #self.act3 = layers.LeakyReLU(alpha=0.1, name='act3')
         else:
             #self.bn1 = QBatchNormalization(beta_quantizer=quantizer, gamma_quantizer=quantizer, mean_quantizer=quantizer, variance_quantizer=quantizer, name='qbn1')
             self.dense1 = QDense(32, kernel_quantizer=quantizer, bias_quantizer=quantizer, name='qdense1')
@@ -189,7 +189,7 @@ class NormalizingFlowModel(Model):
             self.dense2 = QDense(16, kernel_quantizer=quantizer, bias_quantizer=quantizer, name='qdense2')
             self.act2 = QActivation(quantized_relu, name='qact2')
             self.dense3 = QDense(4, kernel_quantizer=quantizer, bias_quantizer=quantizer, name='qdense3')
-            self.act3 = QActivation(quantized_relu, name='qact3')
+            #self.act3 = QActivation(quantized_relu, name='qact3')
 
         self.flows = [PlanarFlow() for _ in range(num_flows)]
     
@@ -200,7 +200,7 @@ class NormalizingFlowModel(Model):
         x = self.dense2(x)
         x = self.act2(x)
         x = self.dense3(x)
-        x = self.act3(x)
+        #x = self.act3(x)
 
         log_det_total = 0
 
