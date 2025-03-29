@@ -7,8 +7,8 @@ import qkeras
 from qkeras import *
 
 
-quantizer = quantized_bits(12, 4, alpha=1)
-quantized_relu = 'quantized_relu(12, 4, negative_slope=0.25)'
+quantizer = quantized_bits(16, 6, alpha=1)
+quantized_relu = 'quantized_relu(16, 6, negative_slope=0.25)'
 # if negative_slope: assert np.mod(np.log2(negative_slope), 1) == 0
 
 ########### plain ae model
